@@ -1,3 +1,4 @@
+import datetime
 from zoho.main import app, reset_app_state
 from typer.testing import CliRunner
 
@@ -51,4 +52,16 @@ def test_add_trip_needs_preset():
     result = runner.invoke(app, args=["add-trip"])
     assert "Error: Missing option '--preset'" in result.output
     assert result.exit_code == 2
+
+def test_add_trip_needs_valid_preset():
+    result = runner.invoke(app, args=["add-trip", "--preset", "invalid"])
+    assert "Error: Invalid value for '--preset': invalid is not a valid preset." in result.output
+    assert result.exit_code == 2
+
+def test_add_trip_defaults_to_today():
+    add_preset("My preset", 15)
+    result = runner.invoke(app, args=["add-trip", "--preset", "My preset"])
+    today = datetime.date.today().strftime("%Y-%m-%d")
+    assert f"Added trip: My preset (15km) on {today}" in result.output
+    assert result.exit_code == 0
 

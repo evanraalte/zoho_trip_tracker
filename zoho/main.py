@@ -1,3 +1,4 @@
+import datetime
 from typing_extensions import Annotated
 import typer
 
@@ -30,8 +31,13 @@ def presets():
 
 @app.command()
 def add_trip(preset: Annotated[str, typer.Option(help="the preset")]) -> None:
-    pass
+    date = datetime.date.today().strftime("%Y-%m-%d")
 
+    if preset not in presets.keys():
+        typer.echo(f"Error: Invalid value for '--preset': {preset} is not a valid preset.")
+        raise typer.Exit(2)
+    pass
+    typer.echo(f"Added trip: {preset} ({presets[preset]}km) on {date}")
 
 if __name__ == "__main__":
     app()
