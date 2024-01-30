@@ -70,3 +70,12 @@ def test_add_trip_can_take_date():
     result = runner.invoke(app, args=["add-trip", "--preset", "My preset", "--date", "2020-01-01"])
     assert "Added trip: My preset (15km) on 2020-01-01" in result.output
     assert result.exit_code == 0
+
+def test_rm_trip_needs_id():
+    pass
+
+def test_show_trips():
+    pass
+
+def test_show_trips_can_filter_by_dates():
+    pass
