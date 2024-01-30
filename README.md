@@ -1,6 +1,6 @@
 Notes:
 
-- Zoho has API, but let's not go that way
+- Zoho has API, but let's not go that way (need to request access, not a very open api it seems)
 - need persistent storage, json or sqlite?
 - sqlite with ORM is definitely easier with filtering
 - how to do the screenshot from ANWB? append it to a preset? Probably a lot of effort, but is nice to accomplish.
