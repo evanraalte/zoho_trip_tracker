@@ -65,3 +65,8 @@ def test_add_trip_defaults_to_today():
     assert f"Added trip: My preset (15km) on {today}" in result.output
     assert result.exit_code == 0
 
+def test_add_trip_can_take_date():
+    add_preset("My preset", 15)
+    result = runner.invoke(app, args=["add-trip", "--preset", "My preset", "--date", "2020-01-01"])
+    assert "Added trip: My preset (15km) on 2020-01-01" in result.output
+    assert result.exit_code == 0
