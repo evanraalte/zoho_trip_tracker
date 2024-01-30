@@ -3,6 +3,12 @@ from typer.testing import CliRunner
 
 runner = CliRunner()
 
+add_preset = lambda title,distance:  runner.invoke(
+    app,
+    args=["add-preset"],
+    input=f"{title}\n{distance}\n",
+)
+
 def setup_function(function):
     reset_app_state()  # Reset the state before each test
 
@@ -13,11 +19,7 @@ def test_main_has_add_preset_command():
     assert result.exit_code == 0
 
 def test_main_add_preset_needs_unique_title():
-    add_preset = lambda title,distance:  runner.invoke(
-        app,
-        args=["add-preset"],
-        input=f"{title}\n{distance}\n",
-    )
+
 
     result = add_preset("My preset", 15)
     assert "Added preset: My preset (15km)" in result.output
@@ -33,6 +35,17 @@ def test_main_add_preset_needs_unique_title():
     result = add_preset("My other preset", 10)
     assert "Added preset: My other preset (10km)" in result.output
     assert result.exit_code == 0
+
+
+def test_shows_presets():
+    for n in range(10):
+        add_preset(f"preset {n}", n)
+    result = runner.invoke(
+        app,
+        args=["presets"],
+    )
+    assert result.exit_code == 0
+    assert len(result.output.splitlines()) == 10
 
 def test_add_trip_needs_preset():
     result = runner.invoke(app, args=["add-trip"])

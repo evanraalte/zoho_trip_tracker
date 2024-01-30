@@ -22,6 +22,11 @@ def add_preset(
     typer.echo(f"Added preset: {title} ({distance}km)")
 
 
+@app.command()
+def presets():
+    for title, distance in presets.items():
+        typer.echo(f"{title} ({distance}km)")
+    return
 
 @app.command()
 def add_trip(preset: Annotated[str, typer.Option(help="the preset")]) -> None:
