@@ -5,39 +5,39 @@ import typer
 app = typer.Typer()
 
 
-presets = {}
+stored_presets = {}
 
 def reset_app_state() -> None:
-    global presets
-    presets = {}
+    global stored_presets
+    stored_presets = {}
 
-@app.command()
+@app.command(help="Add a preset")
 def add_preset(
     title: Annotated[str, typer.Option(prompt=True)],
     distance: Annotated[int, typer.Option(prompt=True)],
 ) -> None:
-    if title in presets.keys():
+    if title in stored_presets.keys():
         typer.echo("Title already exists")
         raise typer.Exit(1)
-    presets[title] = distance
+    stored_presets[title] = distance
     typer.echo(f"Added preset: {title} ({distance}km)")
 
 
-@app.command()
+@app.command(help="Show presets")
 def presets():
-    for title, distance in presets.items():
+    for title, distance in stored_presets.items():
         typer.echo(f"{title} ({distance}km)")
     return
 
-@app.command()
-def add_trip(preset: Annotated[str, typer.Option(help="the preset")], date: Annotated[str, typer.Option(help="Y-m-d")] = None) -> None:
+@app.command(help="Add a trip")
+def add_trip(preset: Annotated[str, typer.Option(help="the preset",autocompletion=stored_presets.keys())], date: Annotated[str, typer.Option(help="Y-m-d")] = None) -> None:
     date = date or datetime.date.today().strftime("%Y-%m-%d")
 
-    if preset not in presets.keys():
+    if preset not in stored_presets.keys():
         typer.echo(f"Error: Invalid value for '--preset': {preset} is not a valid preset.")
         raise typer.Exit(2)
     pass
-    typer.echo(f"Added trip: {preset} ({presets[preset]}km) on {date}")
+    typer.echo(f"Added trip: {preset} ({stored_presets[preset]}km) on {date}")
 
 
 
