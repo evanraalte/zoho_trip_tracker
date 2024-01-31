@@ -1,4 +1,6 @@
 import datetime
+
+import pytest
 from zoho.main import app, reset_app_state
 from typer.testing import CliRunner
 
@@ -43,7 +45,7 @@ def test_shows_presets():
         add_preset(f"preset {n}", n)
     result = runner.invoke(
         app,
-        args=["presets"],
+        args=["show-presets"],
     )
     assert result.exit_code == 0
     assert len(result.output.splitlines()) == 10

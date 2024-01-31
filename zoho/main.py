@@ -1,9 +1,29 @@
+import contextlib
 import datetime
+
 from typing_extensions import Annotated
 import typer
-
+from sqlmodel import Session, create_engine
+from sqlmodel import SQLModel, select
 app = typer.Typer()
 
+from zoho.models import Preset
+
+sqllite_file = "zoho.db"
+sqllite_url = f"sqlite:///{sqllite_file}"
+
+engine = create_engine(sqllite_url, echo=True)
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+@contextlib.contextmanager
+def get_session():
+    session = Session(engine)
+    try:
+        yield session
+    finally:
+        session.close()
 
 stored_presets = {}
 
@@ -20,11 +40,16 @@ def add_preset(
         typer.echo("Title already exists")
         raise typer.Exit(1)
     stored_presets[title] = distance
+
+
     typer.echo(f"Added preset: {title} ({distance}km)")
 
 
 @app.command(help="Show presets")
-def presets():
+def show_presets():
+
+    with get_session() as session:
+        pass
     for title, distance in stored_presets.items():
         typer.echo(f"{title} ({distance}km)")
     return
@@ -42,4 +67,5 @@ def add_trip(preset: Annotated[str, typer.Option(help="the preset",autocompletio
 
 
 if __name__ == "__main__":
+    create_db_and_tables()
     app()
